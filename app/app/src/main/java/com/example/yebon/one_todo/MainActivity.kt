@@ -4,8 +4,11 @@ import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
+import com.example.yebon.one_todo.adapter.TodoAdapter
 import com.example.yebon.one_todo.db.AppDatabase
+import com.example.yebon.one_todo.db.model.Todo
 import com.example.yebon.one_todo.view.YearMonthDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
@@ -34,6 +37,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         AsyncTask.execute{
             minYear = db.todoDao().getMinYear()
+            list.run {
+                val todos = db.todoDao().getTodos(getNowYear(), getNowMonth())
+                adapter = TodoAdapter(addTodayTodo(todos.toMutableList()))
+                layoutManager = LinearLayoutManager(context)
+            }
         }
         year.text = getNowYear().toString()
         month.text = getNowMonth().toString()
@@ -54,4 +62,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun getNowMonth() = calendar.get(Calendar.MONTH) + 1
     private fun getSelectedYear() = Integer.parseInt(year.text.toString())
     private fun getSelectedMonth() = Integer.parseInt(month.text.toString())
+
+    private fun addTodayTodo(list: MutableList<Todo>): List<Todo> {
+        if (list.isEmpty() || list.get(0).isTodayTodo(getNowYear(), getNowMonth())) {
+            list.add(Todo(getNowYear(), getNowMonth()))
+        }
+
+        return list
+    }
 }
