@@ -1,8 +1,11 @@
 package com.example.yebon.one_todo
 
+import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.room.Room
+import com.example.yebon.one_todo.db.AppDatabase
 import com.example.yebon.one_todo.view.YearMonthDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
@@ -13,15 +16,25 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         Calendar.getInstance()
     }
 
+    private val db by lazy {
+        Room.databaseBuilder(applicationContext, AppDatabase::class.java,
+            AppDatabase.DATABASE_NAME).build()
+    }
+
     private val onDismissListener = {selectedYear: Int, selectedMonth: Int ->
         year.text = selectedYear.toString()
         month.text = selectedMonth.toString()
     }
 
+    private var minYear = AppDatabase.INVALID_YEAR
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        AsyncTask.execute{
+            minYear = db.todoDao().getMinYear()
+        }
         year.text = getNowYear().toString()
         month.text = getNowMonth().toString()
         date_container.setOnClickListener(this)
@@ -34,7 +47,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showDatePicker() {
-        YearMonthDialog(this, getSelectedYear(), getSelectedMonth(), onDismissListener).show()
+        YearMonthDialog(this, getSelectedYear(), getSelectedMonth(), minYear, onDismissListener).show()
     }
 
     private fun getNowYear() = calendar.get(Calendar.YEAR)

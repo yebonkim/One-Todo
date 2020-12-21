@@ -3,12 +3,15 @@ package com.example.yebon.one_todo.view
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import androidx.room.Room
 import com.example.yebon.one_todo.R
+import com.example.yebon.one_todo.db.AppDatabase
 import kotlinx.android.synthetic.main.dialog_year_month.*
 
 class YearMonthDialog(context: Context,
                       private val year: Int,
                       private val month: Int,
+                      private val minYear: Int,
                       private val onDismissListener: (selectedYear: Int, selectedMonth: Int) -> Unit) : Dialog(context) {
 
     private val JAN = 1;
@@ -18,8 +21,7 @@ class YearMonthDialog(context: Context,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_year_month)
 
-        // Todo - set minValue from db
-        year_picker.minValue = 2020
+        year_picker.minValue = if (minYear != AppDatabase.INVALID_YEAR) minYear else year
         year_picker.maxValue = year
         year_picker.wrapSelectorWheel = false
 
