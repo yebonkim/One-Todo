@@ -3,8 +3,8 @@ package com.example.yebon.one_todo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.example.yebon.one_todo.view.YearMonthDialog
 import kotlinx.android.synthetic.main.activity_main.*
-import java.time.Year
 import java.util.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -13,12 +13,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         Calendar.getInstance()
     }
 
+    private val onDismissListener = {selectedYear: Int, selectedMonth: Int ->
+        year.text = selectedYear.toString()
+        month.text = selectedMonth.toString()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        year.text = calendar.get(Calendar.YEAR).toString()
-        month.text = calendar.get(Calendar.MONTH).toString()
+        year.text = getNowYear().toString()
+        month.text = getNowMonth().toString()
+        date_container.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -28,6 +34,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showDatePicker() {
-
+        YearMonthDialog(this, getSelectedYear(), getSelectedMonth(), onDismissListener).show()
     }
+
+    private fun getNowYear() = calendar.get(Calendar.YEAR)
+    private fun getNowMonth() = calendar.get(Calendar.MONTH) + 1
+    private fun getSelectedYear() = Integer.parseInt(year.text.toString())
+    private fun getSelectedMonth() = Integer.parseInt(month.text.toString())
 }
