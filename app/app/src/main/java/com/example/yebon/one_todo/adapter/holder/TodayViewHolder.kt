@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yebon.one_todo.R
 import com.example.yebon.one_todo.db.model.Todo
-import kotlinx.android.synthetic.main.viewholder_today_todo.view.*
+import kotlinx.android.synthetic.main.viewholder_add_today_todo.view.*
 
 class TodayViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parent.context).inflate(R.layout.viewholder_today_todo, parent, false)

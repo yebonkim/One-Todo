@@ -31,11 +31,15 @@
             android:layout_height="wrap_content"
             android:minHeight="80dp"
             android:background="@null"
-            android:focusable="false"
-            android:cursorVisible="false"
             android:layout_margin="20dp"
             android:gravity="top"/>
 
     </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/confirm"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:layout_gravity="end" />
 
 </LinearLayout>
