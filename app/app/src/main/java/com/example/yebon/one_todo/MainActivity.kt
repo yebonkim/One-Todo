@@ -4,15 +4,18 @@ import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.NonNull
+import androidx.annotation.Nullable
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.example.yebon.one_todo.adapter.TodoAdapter
 import com.example.yebon.one_todo.db.AppDatabase
 import com.example.yebon.one_todo.db.model.Todo
-import com.example.yebon.one_todo.utils.getNowDay
 import com.example.yebon.one_todo.utils.getNowMonth
 import com.example.yebon.one_todo.utils.getNowYear
 import com.example.yebon.one_todo.view.YearMonthDialog
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -38,18 +41,29 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        list.layoutManager = LinearLayoutManager(applicationContext)
-        AsyncTask.execute{
-            minYear = db.todoDao().getMinYear()
-            list.run {
-                val todos = db.todoDao().getTodos(calendar.getNowYear(), calendar.getNowMonth())
-                adapter = TodoAdapter(addTodayTodo(todos.toMutableList()), db.todoDao())
-            }
-        }
-
         year.text = calendar.getNowYear().toString()
         month.text = calendar.getNowMonth().toString()
         date_container.setOnClickListener(this)
+
+        db.todoDao()
+            .getMinYear()
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                minYear = it
+            }, {
+                minYear = calendar.getNowYear()
+            })
+
+        db.todoDao()
+            .getTodos(calendar.getNowYear(), calendar.getNowMonth())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                list.layoutManager = LinearLayoutManager(applicationContext)
+                list.adapter = TodoAdapter(it)
+            }, {
+                it.printStackTrace()
+            })
     }
 
     override fun onClick(v: View?) {
@@ -58,18 +72,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun showDatePicker() {
-        YearMonthDialog(this, getSelectedYear(), getSelectedMonth(), minYear, onDismissListener).show()
-    }
-
     private fun getSelectedYear() = Integer.parseInt(year.text.toString())
     private fun getSelectedMonth() = Integer.parseInt(month.text.toString())
 
-    private fun addTodayTodo(list: MutableList<Todo>): List<Todo> {
-        if (list.isEmpty()) {
-            list.add(Todo.makeTodayTodo(calendar))
-        }
-
-        return list
+    private fun showDatePicker() {
+        YearMonthDialog(this, getSelectedYear(), getSelectedMonth(), minYear, onDismissListener).show()
     }
 }

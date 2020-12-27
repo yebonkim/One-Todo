@@ -19,12 +19,16 @@ data class Todo(
     constructor(year: Int, month: Int, day: Int) : this(0, "", year, month, day, false)
 
     companion object {
-    fun makeTodayTodo(calendar: Calendar): Todo {
+        fun makeTodayTodo(calendar: Calendar): Todo {
             return Todo(calendar.getNowYear(), calendar.getNowMonth(), calendar.getNowDay())
         }
     }
 
-    fun isTodayTodo(year: Int, month: Int, day: Int): Boolean {
-        return this.year == year && this.month == month && this.day == day
+    fun isTodayTodo(calendar: Calendar): Boolean {
+        val todayYear = calendar.getNowYear()
+        val todayMonth = calendar.getNowMonth()
+        val todayDay = calendar.getNowDay()
+
+        return this.year == todayYear && this.month == todayMonth && this.day == todayDay
     }
 }
