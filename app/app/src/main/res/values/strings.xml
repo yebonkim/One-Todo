@@ -4,4 +4,6 @@
     <string name="today">오늘</string>
     <string name="year_month_title">One-Todo 기록을 볼 날짜를 선택해주세요.</string>
     <string name="confirm">확인</string>
+
+    <string name="add_todo">작업 추가</string>
 </resources>

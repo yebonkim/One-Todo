@@ -29,17 +29,23 @@
             android:id="@+id/todo_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="80dp"
-            android:background="@null"
             android:layout_margin="20dp"
-            android:gravity="top"/>
+            android:background="@null"
+            android:gravity="top"
+            android:minHeight="80dp" />
 
     </androidx.cardview.widget.CardView>
 
     <Button
         android:id="@+id/confirm"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:layout_gravity="end" />
+        android:layout_width="95dp"
+        android:layout_height="55dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:text="@string/add_todo" />
 
 </LinearLayout>

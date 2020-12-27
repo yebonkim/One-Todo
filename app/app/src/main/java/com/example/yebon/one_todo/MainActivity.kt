@@ -9,6 +9,8 @@ import androidx.room.Room
 import com.example.yebon.one_todo.adapter.TodoAdapter
 import com.example.yebon.one_todo.db.AppDatabase
 import com.example.yebon.one_todo.db.model.Todo
+import com.example.yebon.one_todo.utils.getNowMonth
+import com.example.yebon.one_todo.utils.getNowYear
 import com.example.yebon.one_todo.view.YearMonthDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
@@ -38,13 +40,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         AsyncTask.execute{
             minYear = db.todoDao().getMinYear()
             list.run {
-                val todos = db.todoDao().getTodos(getNowYear(), getNowMonth())
-                adapter = TodoAdapter(addTodayTodo(todos.toMutableList()))
+                val todos = db.todoDao().getTodos(calendar.getNowYear(), calendar.getNowMonth())
+                adapter = TodoAdapter(addTodayTodo(todos.toMutableList()), db.todoDao())
                 layoutManager = LinearLayoutManager(context)
             }
         }
-        year.text = getNowYear().toString()
-        month.text = getNowMonth().toString()
+        year.text = calendar.getNowYear().toString()
+        month.text = calendar.getNowMonth().toString()
         date_container.setOnClickListener(this)
     }
 
@@ -58,14 +60,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         YearMonthDialog(this, getSelectedYear(), getSelectedMonth(), minYear, onDismissListener).show()
     }
 
-    private fun getNowYear() = calendar.get(Calendar.YEAR)
-    private fun getNowMonth() = calendar.get(Calendar.MONTH) + 1
     private fun getSelectedYear() = Integer.parseInt(year.text.toString())
     private fun getSelectedMonth() = Integer.parseInt(month.text.toString())
 
     private fun addTodayTodo(list: MutableList<Todo>): List<Todo> {
-        if (list.isEmpty() || list.get(0).isTodayTodo(getNowYear(), getNowMonth())) {
-            list.add(Todo(getNowYear(), getNowMonth()))
+        val year = calendar.getNowYear()
+        val month = calendar.getNowMonth()
+        if (list.isEmpty() || list.get(0).isTodayTodo(year, month)) {
+            list.add(Todo(year, month))
         }
 
         return list

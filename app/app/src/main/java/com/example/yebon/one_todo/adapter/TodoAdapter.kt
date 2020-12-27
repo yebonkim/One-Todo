@@ -5,9 +5,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.yebon.one_todo.adapter.holder.OtherViewHolder
 import com.example.yebon.one_todo.adapter.holder.AddTodayViewHolder
 import com.example.yebon.one_todo.adapter.holder.TodayViewHolder
+import com.example.yebon.one_todo.db.TodoDAO
 import com.example.yebon.one_todo.db.model.Todo
 
-class TodoAdapter(private val list: List<Todo>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class TodoAdapter(private val list: List<Todo>, private val todoDAO : TodoDAO) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val ADD_TODAY_TODO_VIEWHOLDER = 1
     private val TODAY_TODO_VIEWHOLDER = 2
