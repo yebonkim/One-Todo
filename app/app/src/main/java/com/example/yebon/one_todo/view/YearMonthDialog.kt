@@ -3,7 +3,6 @@ package com.example.yebon.one_todo.view
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import androidx.room.Room
 import com.example.yebon.one_todo.R
 import com.example.yebon.one_todo.db.AppDatabase
 import kotlinx.android.synthetic.main.dialog_year_month.*

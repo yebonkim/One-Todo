@@ -1,11 +1,8 @@
 package com.example.yebon.one_todo
 
-import android.os.AsyncTask
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import androidx.annotation.NonNull
-import androidx.annotation.Nullable
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.example.yebon.one_todo.adapter.TodoAdapter
@@ -61,6 +58,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             .subscribe({
                 list.layoutManager = LinearLayoutManager(applicationContext)
                 list.adapter = TodoAdapter(it)
+
+                val latestTodo = getLatestTodo(it)
+
+                if (latestTodo == null) {
+                    showAddingTodayTodoViews(Todo.makeTodayTodo(calendar))
+                } else {
+                    showTodayTodoViews(latestTodo)
+                }
             }, {
                 it.printStackTrace()
             })
@@ -77,5 +82,28 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun showDatePicker() {
         YearMonthDialog(this, getSelectedYear(), getSelectedMonth(), minYear, onDismissListener).show()
+    }
+
+    private fun getLatestTodo(todos: List<Todo>): Todo? {
+        if (todos.isEmpty()) {
+            return null
+        }
+        return todos[0];
+    }
+
+    private fun showAddingTodayTodoViews(todo: Todo) {
+        today_todo_edit.visibility = View.VISIBLE
+        today_todo.visibility = View.GONE
+        confirm.visibility = View.VISIBLE
+
+        today_todo_edit.setText(todo.contents)
+    }
+
+    private fun showTodayTodoViews(todo: Todo) {
+        today_todo_edit.visibility = View.GONE
+        today_todo.visibility = View.VISIBLE
+        confirm.visibility = View.GONE
+
+        today_todo.text = todo.contents
     }
 }
