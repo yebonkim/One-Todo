@@ -9,6 +9,7 @@ import androidx.room.Room
 import com.example.yebon.one_todo.adapter.TodoAdapter
 import com.example.yebon.one_todo.db.AppDatabase
 import com.example.yebon.one_todo.db.model.Todo
+import com.example.yebon.one_todo.utils.getNowDay
 import com.example.yebon.one_todo.utils.getNowMonth
 import com.example.yebon.one_todo.utils.getNowYear
 import com.example.yebon.one_todo.view.YearMonthDialog
@@ -37,14 +38,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        list.layoutManager = LinearLayoutManager(applicationContext)
         AsyncTask.execute{
             minYear = db.todoDao().getMinYear()
             list.run {
                 val todos = db.todoDao().getTodos(calendar.getNowYear(), calendar.getNowMonth())
                 adapter = TodoAdapter(addTodayTodo(todos.toMutableList()), db.todoDao())
-                layoutManager = LinearLayoutManager(context)
             }
         }
+
         year.text = calendar.getNowYear().toString()
         month.text = calendar.getNowMonth().toString()
         date_container.setOnClickListener(this)
@@ -64,10 +66,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun getSelectedMonth() = Integer.parseInt(month.text.toString())
 
     private fun addTodayTodo(list: MutableList<Todo>): List<Todo> {
-        val year = calendar.getNowYear()
-        val month = calendar.getNowMonth()
-        if (list.isEmpty() || list.get(0).isTodayTodo(year, month)) {
-            list.add(Todo(year, month))
+        if (list.isEmpty()) {
+            list.add(Todo.makeTodayTodo(calendar))
         }
 
         return list

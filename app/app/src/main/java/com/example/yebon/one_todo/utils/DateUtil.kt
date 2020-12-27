@@ -9,3 +9,7 @@ fun Calendar.getNowYear(): Int {
 fun Calendar.getNowMonth(): Int {
     return get(Calendar.MONTH) + 1
 }
+
+fun Calendar.getNowDay(): Int {
+    return get(Calendar.DAY_OF_MONTH)
+}
