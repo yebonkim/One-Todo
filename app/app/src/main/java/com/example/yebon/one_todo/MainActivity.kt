@@ -1,13 +1,16 @@
 package com.example.yebon.one_todo
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.example.yebon.one_todo.adapter.TodoAdapter
 import com.example.yebon.one_todo.db.AppDatabase
 import com.example.yebon.one_todo.db.model.Todo
+import com.example.yebon.one_todo.utils.getNowDay
 import com.example.yebon.one_todo.utils.getNowMonth
 import com.example.yebon.one_todo.utils.getNowYear
 import com.example.yebon.one_todo.view.YearMonthDialog
@@ -41,6 +44,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         year.text = calendar.getNowYear().toString()
         month.text = calendar.getNowMonth().toString()
         date_container.setOnClickListener(this)
+        confirm.setOnClickListener(this)
 
         db.todoDao()
             .getMinYear()
@@ -56,9 +60,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                list.layoutManager = LinearLayoutManager(applicationContext)
-                list.adapter = TodoAdapter(it)
-
                 val latestTodo = getLatestTodo(it)
 
                 if (latestTodo == null) {
@@ -66,6 +67,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     showTodayTodoViews(latestTodo)
                 }
+
+                setRecyclerView(it.toMutableList())
             }, {
                 it.printStackTrace()
             })
@@ -74,6 +77,30 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.date_container -> showDatePicker()
+            R.id.confirm -> {
+                val content = today_todo_edit.text.toString()
+
+                if (!TextUtils.isEmpty(content)) {
+                    db.todoDao().addNewTodo(
+                        Todo(
+                            0,
+                            content,
+                            calendar.getNowYear(),
+                            calendar.getNowMonth(),
+                            calendar.getNowDay(),
+                            false
+                        )
+                    )
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()).subscribe({
+                            Toast.makeText(this, "inserted!", Toast.LENGTH_SHORT).show()
+                        }, {
+                            it.printStackTrace()
+                        })
+                } else {
+                    Toast.makeText(this, R.string.input_todo, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -105,5 +132,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         confirm.visibility = View.GONE
 
         today_todo.text = todo.contents
+    }
+
+    private fun setRecyclerView(todos: MutableList<Todo>) {
+        val todoIterator = todos.iterator()
+
+        while (todoIterator.hasNext()) {
+            if (todoIterator.next().isTodayTodo(calendar)) {
+                todoIterator.remove()
+            }
+        }
+
+        list.layoutManager = LinearLayoutManager(applicationContext)
+        list.adapter = TodoAdapter(todos)
     }
 }

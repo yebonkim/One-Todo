@@ -8,7 +8,7 @@ import io.reactivex.Single
 interface TodoDAO {
 
     @Insert
-    fun addNewTodo(todo: Todo)
+    fun addNewTodo(todo: Todo): Single<Long>
 
     @Delete
     fun removeTodo(todo: Todo)
