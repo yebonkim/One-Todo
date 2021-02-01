@@ -11,6 +11,7 @@ class YearMonthDialog(context: Context,
                       private val year: Int,
                       private val month: Int,
                       private val minYear: Int,
+                      private val maxYear: Int,
                       private val onDismissListener: (selectedYear: Int, selectedMonth: Int) -> Unit) : Dialog(context) {
 
     private val JAN = 1;
@@ -20,9 +21,10 @@ class YearMonthDialog(context: Context,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_year_month)
 
-        year_picker.minValue = if (minYear != AppDatabase.INVALID_YEAR) minYear else year
-        year_picker.maxValue = year
+        year_picker.minValue = minYear
+        year_picker.maxValue = maxYear
         year_picker.wrapSelectorWheel = false
+        year_picker.value = year
 
         month_picker.minValue = JAN
         month_picker.maxValue = DEC
