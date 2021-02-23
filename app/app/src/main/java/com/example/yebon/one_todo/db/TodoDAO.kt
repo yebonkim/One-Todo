@@ -16,7 +16,7 @@ interface TodoDAO {
     @Update
     fun updateTodo(todo: Todo)
 
-    @Query("SELECT * FROM todo WHERE year = :year AND month = :month ORDER BY month ASC")
+    @Query("SELECT * FROM todo WHERE year = :year AND month = :month ORDER BY day DESC")
     fun getTodos(year: Int, month: Int): Single<List<Todo>>
 
     @Query("SELECT MIN(year) FROM todo")

@@ -51,8 +51,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MainContract.Vie
     }
 
     private val setTodosOnView = fun (todos: List<Todo>) {
-        updateTodayTodo(mPresenter.getLatestTodo(todos))
-        setRecyclerView(mPresenter.removeTodayTodo(todos.toMutableList()))
+        val todayTodo = mPresenter.getTodayTodo(todos)
+        val todayRemovedList = mPresenter.removeTodayTodo(todos.toMutableList())
+
+        updateTodayTodo(todayTodo)
+
+        if (todayRemovedList.isEmpty()) {
+            showEmptyContainer()
+        } else {
+            showList()
+            setRecyclerView(todayRemovedList)
+        }
+
     }
 
     private val setInsertedTodoOnView = fun (todo: Todo) {
@@ -67,10 +77,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MainContract.Vie
     }
 
     private fun updateTodayTodo(todo: Todo?) {
-        if (todo == null) {
-            showAddingTodayTodoViews(mPresenter.makeTodayTodo())
+        if (mPresenter.isThisMonth(getSelectedYear(), getSelectedMonth())) {
+            if (todo == null) {
+                showAddingTodayTodoViews(mPresenter.makeTodayTodo())
+            } else {
+                showWrittenTodayTodo(todo)
+            }
         } else {
-            showTodayTodoViews(todo)
+            hideTodayTodoContainer()
         }
     }
 
@@ -80,6 +94,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MainContract.Vie
     }
 
     private fun showAddingTodayTodoViews(todo: Todo) {
+        showTodayTodoContainer()
         today_todo_edit.visibility = View.VISIBLE
         today_todo.visibility = View.GONE
         confirm.visibility = View.VISIBLE
@@ -87,7 +102,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MainContract.Vie
         today_todo_edit.setText(todo.contents)
     }
 
-    private fun showTodayTodoViews(todo: Todo) {
+    private fun showWrittenTodayTodo(todo: Todo) {
+        showTodayTodoContainer()
         today_todo_edit.visibility = View.GONE
         today_todo.visibility = View.VISIBLE
         confirm.visibility = View.GONE
@@ -95,9 +111,29 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MainContract.Vie
         today_todo.text = todo.contents
     }
 
+    private fun hideTodayTodoContainer() {
+        today.visibility = View.GONE
+        today_todo_container.visibility = View.GONE
+    }
+
+    private fun showTodayTodoContainer() {
+        today.visibility = View.VISIBLE
+        today_todo_container.visibility = View.VISIBLE
+    }
+
     private fun setRecyclerView(todos: MutableList<Todo>) {
         list.layoutManager = LinearLayoutManager(applicationContext)
         list.adapter = TodoAdapter(todos)
+    }
+
+    private fun showList() {
+        list.visibility = View.VISIBLE
+        empty_container.visibility = View.GONE
+    }
+
+    private fun showEmptyContainer() {
+        list.visibility = View.GONE
+        empty_container.visibility = View.VISIBLE
     }
 
     private fun getSelectedYear() = Integer.parseInt(year.text.toString())

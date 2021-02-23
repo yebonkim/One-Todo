@@ -8,4 +8,6 @@
     <string name="add_todo">작업 추가</string>
     <string name="input_todo">TODO를 입력해주세요.</string>
     <string name="todo_added">TODO가 추가되었어요!</string>
+    <string name="today_todo_hint">오늘의 하이라이트는 무엇인가요?</string>
+    <string name="no_todo_existed">아직 이 Todo가 없어요😢</string>
 </resources>

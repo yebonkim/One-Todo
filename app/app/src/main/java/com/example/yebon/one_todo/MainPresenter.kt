@@ -1,6 +1,5 @@
 package com.example.yebon.one_todo
 
-import android.widget.Toast
 import androidx.room.Room
 import com.example.yebon.one_todo.db.AppDatabase
 import com.example.yebon.one_todo.db.model.Todo
@@ -8,10 +7,8 @@ import com.example.yebon.one_todo.utils.getNowDay
 import com.example.yebon.one_todo.utils.getNowMonth
 import com.example.yebon.one_todo.utils.getNowYear
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
-import java.util.function.Consumer
 
 class MainPresenter(val mView: MainContract.View) : MainContract.Presenter {
 
@@ -67,21 +64,24 @@ class MainPresenter(val mView: MainContract.View) : MainContract.Presenter {
     override fun makeTodayTodo() = Todo.makeTodayTodo(calendar)
 
     override fun removeTodayTodo(todos: MutableList<Todo>): MutableList<Todo> {
-        val todoIterator = todos.iterator()
+        val todayTodo = getTodayTodo(todos)
 
-        while (todoIterator.hasNext()) {
-            if (todoIterator.next().isTodayTodo(calendar)) {
-                todoIterator.remove()
-            }
+        if (todayTodo != null) {
+            todos.removeAt(0)
         }
 
         return todos
     }
 
-    override fun getLatestTodo(todos: List<Todo>): Todo? {
+    override fun getTodayTodo(todos: List<Todo>): Todo? {
         if (todos.isEmpty()) {
             return null
         }
-        return todos[0];
+
+        return if (todos[0].isTodayTodo(calendar)) todos[0] else null
+    }
+
+    override fun isThisMonth(year: Int, month: Int): Boolean {
+        return year == getNowYear() && month == getNowMonth()
     }
 }

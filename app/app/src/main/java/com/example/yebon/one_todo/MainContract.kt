@@ -36,6 +36,7 @@ interface MainContract {
         fun getMinYear(): Int
         fun makeTodayTodo(): Todo
         fun removeTodayTodo(todos: MutableList<Todo>): MutableList<Todo>
-        fun getLatestTodo(todos: List<Todo>): Todo?
+        fun getTodayTodo(todos: List<Todo>): Todo?
+        fun isThisMonth(year: Int, month: Int): Boolean
     }
 }
