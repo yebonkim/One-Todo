@@ -14,7 +14,7 @@ data class Todo(
     val year: Int,
     val month: Int,
     val day: Int,
-    val isDone: Boolean
+    var isDone: Boolean
 ) {
     constructor(year: Int, month: Int, day: Int) : this(0, "", year, month, day, false)
 

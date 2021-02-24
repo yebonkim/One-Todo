@@ -2,6 +2,14 @@ package com.example.yebon.one_todo.utils
 
 import java.util.*
 
+class DateUtil {
+    companion object {
+        fun getDateStr(year: Int, month: Int, day: Int): String {
+            return "${year}.${month}.${day}"
+        }
+    }
+}
+
 fun Calendar.getNowYear(): Int {
     return get(Calendar.YEAR)
 }

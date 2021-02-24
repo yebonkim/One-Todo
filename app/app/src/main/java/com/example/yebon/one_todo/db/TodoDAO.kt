@@ -14,7 +14,7 @@ interface TodoDAO {
     fun removeTodo(todo: Todo)
 
     @Update
-    fun updateTodo(todo: Todo)
+    fun updateTodo(todo: Todo): Single<Int>
 
     @Query("SELECT * FROM todo WHERE year = :year AND month = :month ORDER BY day DESC")
     fun getTodos(year: Int, month: Int): Single<List<Todo>>
