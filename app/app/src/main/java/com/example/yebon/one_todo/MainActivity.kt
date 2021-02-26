@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MainContract.Vie
         new_todo_btn.setOnClickListener(this)
 
         mPresenter.loadMinYear()
+        mPresenter.loadMaxYear()
         loadTodosAndUpdateView(mPresenter.getNowYear(), mPresenter.getNowMonth())
     }
 
@@ -47,7 +48,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MainContract.Vie
             }
             R.id.new_todo_btn -> {
                 AddingDialog(this, mPresenter.getTodoDAO(), mPresenter.getNowYear(),
-                    mPresenter.getNowMonth(), mPresenter.getNowDay(), onDismissListener).show()
+                    mPresenter.getNowMonth(), mPresenter.getNowDay(), fun(year: Int, month: Int) {
+                        mPresenter.loadMinYear()
+                        mPresenter.loadMaxYear()
+                        onDismissListener(year, month)
+                    }).show()
             }
         }
     }
@@ -105,7 +110,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MainContract.Vie
 
     private fun showDatePicker() {
         YearMonthDialog(this, getSelectedYear(), getSelectedMonth(), mPresenter.getMinYear(),
-            mPresenter.getNowYear(), onDismissListener).show()
+            mPresenter.getMaxYear(), onDismissListener).show()
     }
 
     private fun showAddingTodayTodoViews(todo: Todo) {

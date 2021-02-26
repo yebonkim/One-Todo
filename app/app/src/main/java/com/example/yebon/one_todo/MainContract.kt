@@ -29,12 +29,14 @@ interface MainContract {
 
     interface Presenter {
         fun loadMinYear()
+        fun loadMaxYear()
         fun loadTodos(year: Int, month: Int, setTodoOnView: (List<Todo>) -> Unit)
         fun addTodo(content: String, onTodoAdded: (Todo) -> Unit)
         fun getNowYear(): Int
         fun getNowMonth(): Int
         fun getNowDay(): Int
         fun getMinYear(): Int
+        fun getMaxYear(): Int
         fun makeTodayTodo(): Todo
         fun removeTodayTodo(todos: MutableList<Todo>): MutableList<Todo>
         fun getTodayTodo(todos: List<Todo>): Todo?

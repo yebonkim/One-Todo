@@ -34,6 +34,7 @@ class AddingDialog(
         setContentView(R.layout.dialog_adding)
 
         setCancelable(true)
+        date.text = DateUtil.getDateStr(year, month, day)
         date.setOnClickListener(this)
         confirm.setOnClickListener(this)
     }
@@ -90,7 +91,7 @@ class AddingDialog(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe ({
-                onAddedListener(month, day)
+                onAddedListener(year, month)
                 dismiss()
             }, {
                 Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show()

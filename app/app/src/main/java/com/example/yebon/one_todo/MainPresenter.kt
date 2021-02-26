@@ -14,6 +14,7 @@ import java.util.*
 class MainPresenter(val mView: MainContract.View) : MainContract.Presenter {
 
     private var minYear = AppDatabase.INVALID_YEAR
+    private var maxYear = AppDatabase.INVALID_YEAR
 
     private val db by lazy {
         Room.databaseBuilder(mView.getAppContext(), AppDatabase::class.java,
@@ -32,6 +33,17 @@ class MainPresenter(val mView: MainContract.View) : MainContract.Presenter {
                 minYear = it
             }, {
                 minYear = calendar.getNowYear()
+            })
+    }
+
+    override fun loadMaxYear() {
+        db.todoDao()
+            .getMaxYear()
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                maxYear = it
+            }, {
+                maxYear = calendar.getNowYear()
             })
     }
 
@@ -61,6 +73,7 @@ class MainPresenter(val mView: MainContract.View) : MainContract.Presenter {
     override fun getNowDay() = calendar.getNowDay()
 
     override fun getMinYear() = if (minYear != AppDatabase.INVALID_YEAR) minYear else calendar.getNowYear()
+    override fun getMaxYear() = if (maxYear != AppDatabase.INVALID_YEAR) maxYear else calendar.getNowYear()
 
     override fun makeTodayTodo() = Todo.makeTodayTodo(calendar)
 

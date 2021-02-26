@@ -24,4 +24,7 @@ interface TodoDAO {
 
     @Query("SELECT MIN(year) FROM todo")
     fun getMinYear(): Single<Int>
+
+    @Query("SELECT MAX(year) FROM todo")
+    fun getMaxYear(): Single<Int>
 }
