@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.example.yebon.one_todo.adapter.TodoAdapter
 import com.example.yebon.one_todo.db.AppDatabase
+import com.example.yebon.one_todo.db.TodoDAO
 import com.example.yebon.one_todo.db.model.Todo
 import com.example.yebon.one_todo.utils.getNowDay
 import com.example.yebon.one_todo.utils.getNowMonth
@@ -38,5 +39,6 @@ interface MainContract {
         fun removeTodayTodo(todos: MutableList<Todo>): MutableList<Todo>
         fun getTodayTodo(todos: List<Todo>): Todo?
         fun isThisMonth(year: Int, month: Int): Boolean
+        fun getTodoDAO(): TodoDAO
     }
 }

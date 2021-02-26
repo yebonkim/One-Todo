@@ -17,5 +17,8 @@
 
     <string name="todo_deleted">TODO가 삭제되었어요!</string>
     <string name="todo_updated">TODO가 수정되었어요!</string>
+    
+    <string name="add_previous_todo">이전 날짜의 Todo를 추가할 수 있어요.🤗</string>
+    <string name="already_existed_todo">이미 그 날은 Todo가 있어요.😢</string>
 
 </resources>

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.yebon.one_todo.adapter.TodoAdapter
 import com.example.yebon.one_todo.db.model.Todo
+import com.example.yebon.one_todo.view.AddingDialog
 import com.example.yebon.one_todo.view.YearMonthDialog
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MainContract.Vie
         month.text = mPresenter.getNowMonth().toString()
         date_container.setOnClickListener(this)
         confirm.setOnClickListener(this)
+        new_todo_btn.setOnClickListener(this)
 
         mPresenter.loadMinYear()
         loadTodosAndUpdateView(mPresenter.getNowYear(), mPresenter.getNowMonth())
@@ -42,6 +44,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MainContract.Vie
                 } else {
                     Toast.makeText(this, R.string.input_todo, Toast.LENGTH_SHORT).show()
                 }
+            }
+            R.id.new_todo_btn -> {
+                AddingDialog(this, mPresenter.getTodoDAO(), mPresenter.getNowYear(),
+                    mPresenter.getNowMonth(), mPresenter.getNowDay(), onDismissListener).show()
             }
         }
     }

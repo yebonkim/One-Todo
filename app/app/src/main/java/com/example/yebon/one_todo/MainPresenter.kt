@@ -2,6 +2,7 @@ package com.example.yebon.one_todo
 
 import androidx.room.Room
 import com.example.yebon.one_todo.db.AppDatabase
+import com.example.yebon.one_todo.db.TodoDAO
 import com.example.yebon.one_todo.db.model.Todo
 import com.example.yebon.one_todo.utils.getNowDay
 import com.example.yebon.one_todo.utils.getNowMonth
@@ -83,5 +84,9 @@ class MainPresenter(val mView: MainContract.View) : MainContract.Presenter {
 
     override fun isThisMonth(year: Int, month: Int): Boolean {
         return year == getNowYear() && month == getNowMonth()
+    }
+
+    override fun getTodoDAO(): TodoDAO {
+        return db.todoDao()
     }
 }
