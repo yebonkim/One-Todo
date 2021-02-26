@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MainContract.Vie
         confirm.setOnClickListener(this)
 
         mPresenter.loadMinYear()
-        mPresenter.loadTodos(mPresenter.getNowYear(), mPresenter.getNowMonth(), setTodosOnView)
+        loadTodosAndUpdateView(mPresenter.getNowYear(), mPresenter.getNowMonth())
     }
 
     override fun onClick(v: View?) {
@@ -48,6 +48,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MainContract.Vie
 
     override fun getAppContext(): Context {
         return applicationContext
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadTodosAndUpdateView(getSelectedYear(), getSelectedMonth())
     }
 
     private val setTodosOnView = fun (todos: List<Todo>) {
@@ -73,7 +78,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MainContract.Vie
     private val onDismissListener = {selectedYear: Int, selectedMonth: Int ->
         year.text = selectedYear.toString()
         month.text = selectedMonth.toString()
-        mPresenter.loadTodos(selectedYear, selectedMonth, setTodosOnView)
+        loadTodosAndUpdateView(selectedYear, selectedMonth)
+    }
+
+    private fun loadTodosAndUpdateView(year: Int, month: Int) {
+        mPresenter.loadTodos(year, month, setTodosOnView)
     }
 
     private fun updateTodayTodo(todo: Todo?) {
@@ -123,7 +132,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, MainContract.Vie
 
     private fun setRecyclerView(todos: MutableList<Todo>) {
         list.layoutManager = LinearLayoutManager(applicationContext)
-        list.adapter = TodoAdapter(todos)
+        list.adapter = TodoAdapter(todos, {loadTodosAndUpdateView(getSelectedYear(), getSelectedMonth())})
     }
 
     private fun showList() {

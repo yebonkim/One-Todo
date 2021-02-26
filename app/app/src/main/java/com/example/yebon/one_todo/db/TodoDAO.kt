@@ -11,7 +11,7 @@ interface TodoDAO {
     fun addNewTodo(todo: Todo): Single<Long>
 
     @Delete
-    fun removeTodo(todo: Todo)
+    fun removeTodo(todo: Todo): Single<Int>
 
     @Update
     fun updateTodo(todo: Todo): Single<Int>

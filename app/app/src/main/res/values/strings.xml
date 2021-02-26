@@ -4,10 +4,18 @@
     <string name="today">오늘</string>
     <string name="year_month_title">One-Todo 기록을 볼 날짜를 선택해주세요.</string>
     <string name="confirm">확인</string>
+    <string name="cancel">취소</string>
+    <string name="delete">삭제</string>
+    <string name="complete">완료</string>
+    <string name="error">오류가 발생했어요.🥺</string>
 
     <string name="add_todo">작업 추가</string>
     <string name="input_todo">TODO를 입력해주세요.</string>
     <string name="todo_added">TODO가 추가되었어요!</string>
     <string name="today_todo_hint">오늘의 하이라이트는 무엇인가요?</string>
-    <string name="no_todo_existed">아직 이 Todo가 없어요😢</string>
+    <string name="no_todo_existed">아직 이 달의 Todo가 없어요😔</string>
+
+    <string name="todo_deleted">TODO가 삭제되었어요!</string>
+    <string name="todo_updated">TODO가 수정되었어요!</string>
+
 </resources>
