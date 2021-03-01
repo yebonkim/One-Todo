@@ -3,6 +3,7 @@ package com.example.yebon.one_todo
 import android.content.Context
 import com.example.yebon.one_todo.db.TodoDAO
 import com.example.yebon.one_todo.db.model.Todo
+import com.firebase.ui.auth.AuthUI
 
 interface MainContract {
 
@@ -30,5 +31,6 @@ interface MainContract {
         @ConfirmBtnModes.ConfirmBtnMode
         fun getConfirmBtnMode(): Int
         fun getTodayTodo(): Todo?
+        fun getAuthProvider(): ArrayList<AuthUI.IdpConfig>
     }
 }

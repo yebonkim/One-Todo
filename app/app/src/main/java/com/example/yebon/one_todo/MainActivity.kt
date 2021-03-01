@@ -1,6 +1,8 @@
 package com.example.yebon.one_todo
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.MotionEvent
@@ -12,11 +14,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.yebon.one_todo.adapter.TodoAdapter
 import com.example.yebon.one_todo.db.model.Todo
 import com.example.yebon.one_todo.view.AddingDialog
+import com.example.yebon.one_todo.view.AskLoginDialog
 import com.example.yebon.one_todo.view.KeyboardDetectingEditText
 import com.example.yebon.one_todo.view.YearMonthDialog
+import com.firebase.ui.auth.AuthUI
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnTouchListener, MainContract.View {
+
+    companion object {
+        const val IS_FIRST_LAUNCH = "isFirstLaunch"
+        const val AUTH_UI_REQUEST_CODE = 2021
+    }
 
     private val mPresenter by lazy {
         MainPresenter(this)
@@ -56,7 +65,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnTouchList
 
         mPresenter.loadMinYear()
         mPresenter.loadMaxYear()
-        loadTodosAndUpdateView(mPresenter.getNowYear(), mPresenter.getNowMonth())
+
+        if (isFirstLaunch()) {
+            AskLoginDialog(this) {
+                requestAuthUI()
+            }.show()
+            setIsFirstLaunch(false)
+        } else {
+            loadTodosAndUpdateView(mPresenter.getNowYear(), mPresenter.getNowMonth())
+        }
     }
 
     override fun onResume() {
@@ -267,6 +284,34 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, View.OnTouchList
         mPresenter.addTodo(content) {
             Toast.makeText(this, R.string.todo_added, Toast.LENGTH_SHORT).show()
             loadTodosAndUpdateView(mPresenter.getNowYear(), mPresenter.getNowMonth())
+        }
+    }
+
+    private fun requestAuthUI() {
+        startActivityForResult(
+            AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(mPresenter.getAuthProvider())
+                .build(), AUTH_UI_REQUEST_CODE)
+    }
+
+    private fun isFirstLaunch(): Boolean {
+        return getPreferences(Context.MODE_PRIVATE).getBoolean(IS_FIRST_LAUNCH, true)
+    }
+
+    private fun setIsFirstLaunch(isFirstLaunch: Boolean) {
+        getPreferences(Context.MODE_PRIVATE).edit().putBoolean(IS_FIRST_LAUNCH, isFirstLaunch).apply()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            AUTH_UI_REQUEST_CODE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    Toast.makeText(this, getString(R.string.login_success), Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }

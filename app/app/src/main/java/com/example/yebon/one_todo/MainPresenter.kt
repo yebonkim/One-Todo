@@ -7,9 +7,11 @@ import com.example.yebon.one_todo.db.model.Todo
 import com.example.yebon.one_todo.utils.getNowDay
 import com.example.yebon.one_todo.utils.getNowMonth
 import com.example.yebon.one_todo.utils.getNowYear
+import com.firebase.ui.auth.AuthUI
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainPresenter(val mView: MainContract.View) : MainContract.Presenter {
 
@@ -28,6 +30,10 @@ class MainPresenter(val mView: MainContract.View) : MainContract.Presenter {
     private val mCalendar by lazy {
         Calendar.getInstance()
     }
+
+    private val mAuthProvider = arrayListOf(
+        AuthUI.IdpConfig.GoogleBuilder().build()
+    )
 
     override fun loadMinYear() {
         mDb.todoDao()
@@ -122,6 +128,10 @@ class MainPresenter(val mView: MainContract.View) : MainContract.Presenter {
 
     override fun getTodayTodo(): Todo? {
         return mTodayTodo
+    }
+
+    override fun getAuthProvider(): ArrayList<AuthUI.IdpConfig> {
+        return mAuthProvider
     }
 
     private fun getTodayTodo(todos: List<Todo>): Todo? {
