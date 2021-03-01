@@ -24,4 +24,8 @@
     <string name="add_todo_at_selected_date">선택한 날짜의 Todo를 추가할 수 있어요.🤗</string>
     <string name="already_existed_todo">이미 그 날은 Todo가 있어요.😢</string>
 
+    <string name="ask_login">로그인 하시겠어요? \n로그인 하시면 동기화 기능을 사용할 수 있어요.</string>
+    <string name="go_login">로그인 하기</string>
+    <string name="later">다음에 이용할게요.</string>
+
 </resources>
