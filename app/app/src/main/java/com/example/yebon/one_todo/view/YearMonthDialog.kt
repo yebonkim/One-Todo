@@ -14,8 +14,8 @@ class YearMonthDialog(context: Context,
                       private val maxYear: Int,
                       private val onDismissListener: (selectedYear: Int, selectedMonth: Int) -> Unit) : Dialog(context) {
 
-    private val JAN = 1;
-    private val DEC = 12;
+    private val JAN = 1
+    private val DEC = 12
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

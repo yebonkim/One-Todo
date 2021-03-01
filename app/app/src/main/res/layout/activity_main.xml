@@ -77,32 +77,22 @@
             app:cardUseCompatPadding="true"
             app:layout_constraintTop_toTopOf="parent">
 
-            <EditText
+            <com.example.yebon.one_todo.view.KeyboardDetectingEditText
                 android:id="@+id/today_todo_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:background="@null"
                 android:gravity="top"
+                android:textColor="@color/black"
                 android:hint="@string/today_todo_hint"
                 android:minHeight="80dp" />
-
-            <TextView
-                android:id="@+id/today_todo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:background="@null"
-                android:gravity="top"
-                android:minHeight="80dp"
-                android:textColor="@color/black"
-                android:visibility="gone" />
 
         </androidx.cardview.widget.CardView>
 
         <Button
             android:id="@+id/confirm"
-            android:layout_width="95dp"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/rounded_primary_color_background"
@@ -110,8 +100,20 @@
             android:textColor="@color/white"
             android:textSize="15sp"
             android:textStyle="bold"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             app:layout_constraintEnd_toEndOf="@id/card_view"
             app:layout_constraintTop_toBottomOf="@id/card_view" />
+
+        <Button
+            android:id="@+id/delete"
+            android:layout_width="18dp"
+            android:layout_height="21dp"
+            android:background="@drawable/ic_delete"
+            app:layout_constraintEnd_toStartOf="@id/confirm"
+            app:layout_constraintTop_toBottomOf="@id/card_view"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="26dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -148,7 +150,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:text="@string/no_todo_existed"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

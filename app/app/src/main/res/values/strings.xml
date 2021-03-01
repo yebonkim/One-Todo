@@ -10,6 +10,9 @@
     <string name="error">오류가 발생했어요.🥺</string>
 
     <string name="add_todo">작업 추가</string>
+    <string name="update_todo">수정하기</string>
+    <string name="done">완료했어요. 🎉</string>
+    <string name="do_more">더 해야 해요. 🧐</string>
     <string name="input_todo">TODO를 입력해주세요.</string>
     <string name="todo_added">TODO가 추가되었어요!</string>
     <string name="today_todo_hint">오늘의 하이라이트는 무엇인가요?</string>
@@ -18,7 +21,7 @@
     <string name="todo_deleted">TODO가 삭제되었어요!</string>
     <string name="todo_updated">TODO가 수정되었어요!</string>
     
-    <string name="add_previous_todo">이전 날짜의 Todo를 추가할 수 있어요.🤗</string>
+    <string name="add_todo_at_selected_date">선택한 날짜의 Todo를 추가할 수 있어요.🤗</string>
     <string name="already_existed_todo">이미 그 날은 Todo가 있어요.😢</string>
 
 </resources>

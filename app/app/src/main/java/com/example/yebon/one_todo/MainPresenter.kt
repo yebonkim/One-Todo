@@ -15,91 +15,134 @@ class MainPresenter(val mView: MainContract.View) : MainContract.Presenter {
 
     private var minYear = AppDatabase.INVALID_YEAR
     private var maxYear = AppDatabase.INVALID_YEAR
+    @ConfirmBtnModes.ConfirmBtnMode
+    private var mConfirmBtnMode = ConfirmBtnModes.NONE
 
-    private val db by lazy {
+    private var mTodayTodo: Todo? = null
+
+    private val mDb by lazy {
         Room.databaseBuilder(mView.getAppContext(), AppDatabase::class.java,
             AppDatabase.DATABASE_NAME).build()
     }
 
-    private val calendar by lazy {
+    private val mCalendar by lazy {
         Calendar.getInstance()
     }
 
     override fun loadMinYear() {
-        db.todoDao()
+        mDb.todoDao()
             .getMinYear()
             .subscribeOn(Schedulers.io())
             .subscribe({
                 minYear = it
             }, {
-                minYear = calendar.getNowYear()
+                minYear = mCalendar.getNowYear()
             })
     }
 
     override fun loadMaxYear() {
-        db.todoDao()
+        mDb.todoDao()
             .getMaxYear()
             .subscribeOn(Schedulers.io())
             .subscribe({
                 maxYear = it
             }, {
-                maxYear = calendar.getNowYear()
+                maxYear = mCalendar.getNowYear()
             })
     }
 
-    override fun loadTodos(year: Int, month: Int, setTodoOnView: (List<Todo>) -> Unit) {
-        db.todoDao()
+    override fun loadTodos(year: Int, month: Int, setTodoOnView: (List<Todo>, Todo?) -> Unit) {
+        mDb.todoDao()
             .getTodos(year, month)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(setTodoOnView, { it.printStackTrace() })
+            .subscribe({
+                val todayTodo = getTodayTodo(it)
+                mTodayTodo = todayTodo
+                val todayRemovedTodos = removeTodoFromList(it.toMutableList(), todayTodo)
+
+                setTodoOnView(todayRemovedTodos, todayTodo)
+            }, { it.printStackTrace() })
     }
 
-    override fun addTodo(content: String, onTodoAdded: (Todo) -> Unit) {
-        val newTodo = Todo(0, content, calendar.getNowYear(), calendar.getNowMonth(),
-            calendar.getNowDay(), false)
-        db.todoDao().addNewTodo(newTodo)
+    override fun addTodo(content: String, onTodoAdded: (Long) -> Unit) {
+        val newTodo = Todo(0, content, mCalendar.getNowYear(), mCalendar.getNowMonth(),
+            mCalendar.getNowDay(), false)
+        mDb.todoDao().addNewTodo(newTodo)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                onTodoAdded(newTodo)
-            }, {
+            .subscribe(onTodoAdded, {
                 it.printStackTrace()
             })
     }
 
-    override fun getNowYear() = calendar.getNowYear()
-    override fun getNowMonth() = calendar.getNowMonth()
-    override fun getNowDay() = calendar.getNowDay()
-
-    override fun getMinYear() = if (minYear != AppDatabase.INVALID_YEAR) minYear else calendar.getNowYear()
-    override fun getMaxYear() = if (maxYear != AppDatabase.INVALID_YEAR) maxYear else calendar.getNowYear()
-
-    override fun makeTodayTodo() = Todo.makeTodayTodo(calendar)
-
-    override fun removeTodayTodo(todos: MutableList<Todo>): MutableList<Todo> {
-        val todayTodo = getTodayTodo(todos)
-
-        if (todayTodo != null) {
-            todos.removeAt(0)
-        }
-
-        return todos
+    override fun updateTodo(toBeUpdatedTodo: Todo, onTodoUpdated: (Int) -> Unit) {
+        mDb.todoDao().updateTodo(toBeUpdatedTodo)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onTodoUpdated, {
+                it.printStackTrace()
+            })
     }
 
-    override fun getTodayTodo(todos: List<Todo>): Todo? {
-        if (todos.isEmpty()) {
-            return null
-        }
-
-        return if (todos[0].isTodayTodo(calendar)) todos[0] else null
+    override fun deleteTodo(toBeDeletedTodo: Todo, onTodoDeleted: (Int) -> Unit) {
+        mDb.todoDao().removeTodo(toBeDeletedTodo)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onTodoDeleted, {
+                it.printStackTrace()
+            })
     }
+
+    override fun getNowYear() = mCalendar.getNowYear()
+    override fun getNowMonth() = mCalendar.getNowMonth()
+    override fun getNowDay() = mCalendar.getNowDay()
+
+    override fun getMinYear() = if (minYear != AppDatabase.INVALID_YEAR) minYear else mCalendar.getNowYear()
+    override fun getMaxYear() = if (maxYear != AppDatabase.INVALID_YEAR) maxYear else mCalendar.getNowYear()
+
+    override fun makeTodayTodo() = Todo.makeTodayTodo(mCalendar)
+
 
     override fun isThisMonth(year: Int, month: Int): Boolean {
         return year == getNowYear() && month == getNowMonth()
     }
 
     override fun getTodoDAO(): TodoDAO {
-        return db.todoDao()
+        return mDb.todoDao()
+    }
+
+    override fun setConfirmBtnMode(@ConfirmBtnModes.ConfirmBtnMode confirmBtnMode: Int) {
+        mConfirmBtnMode = confirmBtnMode
+    }
+
+    override fun getConfirmBtnMode(): Int {
+        return mConfirmBtnMode
+    }
+
+    override fun getTodayTodo(): Todo? {
+        return mTodayTodo
+    }
+
+    private fun getTodayTodo(todos: List<Todo>): Todo? {
+        if (todos.isEmpty()) {
+            return null
+        }
+
+        for (todo in todos) {
+            if (todo.isTodayTodo(mCalendar)) {
+                return todo
+            }
+        }
+
+        return null
+    }
+
+    private fun removeTodoFromList(todos: MutableList<Todo>, todo: Todo?): MutableList<Todo> {
+        if (todo != null) {
+            todos.remove(todo)
+        }
+
+        return todos
     }
 }
